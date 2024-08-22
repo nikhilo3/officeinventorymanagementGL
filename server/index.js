@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import orderRouter from "./controller/orderCtrl.js";
 import issueItemRouter from "./controller/issueItemCtrl.js";
 import returnItemRouter from "./controller/returnItemCtrl.js";
+import reportRouter from "./controller/reportCtrl.js";
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ app.use('/api/user', userroutes);
 app.use('/api/order',orderRouter)
 app.use('/api/issueitem',issueItemRouter)
 app.use('/api/returnitem',returnItemRouter)
-
+app.use('/api/report',reportRouter)
 
 app.listen(PORT, () => {
     console.log(`server is running on http://localhost:${PORT}`);

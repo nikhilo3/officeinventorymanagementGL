@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-var issueSchema = mongoose.Schema({
+var issueSchema = new mongoose.Schema({
     departmentName: {
         type: String,
         required: true
