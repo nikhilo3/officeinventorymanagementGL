@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
+import FormReturn from '../components/FormReturn';
 
 function ReturnItem() {
+
+  const [showPopup,setShowPopup] = useState(false)
+
   const products = [
     {
       id: 1,
@@ -52,9 +56,10 @@ function ReturnItem() {
     },
   ];
   return (
+    <>
     <div className="p-2">
       <div className="flex justify-end mb-4">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>{setShowPopup(true)}}> 
           return Item
         </button>
       </div>
@@ -94,6 +99,9 @@ function ReturnItem() {
         </div>
       </div>
     </div>
+    {showPopup && <FormReturn setShowPopup={setShowPopup}/>}
+    </>
+
   )
 }
 

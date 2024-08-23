@@ -1,33 +1,31 @@
 import React, { useState } from "react";
 
-function FormOrder({ setShowPopup }) {
-    const [formData,setFormData] = useState({
-        productname:"",
-        supplierName:"",
-        quantity:""
-    })
+function FormReturn({ setShowPopup }) {
+  const [formData, setFormData] = useState({
+    departmentName: "",
+    reason: "",
+  });
 
-    const handleChange = (e)=>{
-        setFormData({...formData,[e.target.name]:e.target.value})
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleOrder = (e) => {
     e.preventDefault();
-    console.log("order added",formData);
+    console.log("order added", formData);
     setShowPopup(false);
-    
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[200] h-screen">
       <div className="bg-white p-8 rounded shadow-md w-1/3">
-        <h2 className="text-xl font-semibold mb-4">New Order</h2>
-        <form >
+        <h2 className="text-xl font-semibold mb-4">Return</h2>
+        <form>
           <div className="mb-4">
-            <label className="block text-gray-700">Product Name</label>
+            <label className="block text-gray-700">DepartmentName</label>
             <input
               type="text"
-              name="productname"
+              name="departmentName"
               className="w-full px-3 py-2 border rounded"
               value={formData.productname}
               onChange={handleChange}
@@ -35,23 +33,12 @@ function FormOrder({ setShowPopup }) {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">Quantity</label>
-            <input
-              type="number"
-              name="quantity"
-              className="w-full px-3 py-2 border rounded"
-              value={formData.quantity}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700">SupplierName</label>
+            <label className="block text-gray-700">Reason</label>
             <input
               type="text"
-              name="supplierName"
+              name="reason"
               className="w-full px-3 py-2 border rounded"
-              value={formData.supplierName}
+              value={formData.quantity}
               onChange={handleChange}
             />
           </div>
@@ -76,4 +63,4 @@ function FormOrder({ setShowPopup }) {
   );
 }
 
-export default FormOrder;
+export default FormReturn;
