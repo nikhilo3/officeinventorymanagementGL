@@ -8,6 +8,7 @@ import orderRouter from "./controller/orderCtrl.js";
 import issueItemRouter from "./controller/issueItemCtrl.js";
 import returnItemRouter from "./controller/returnItemCtrl.js";
 import reportRouter from "./controller/reportCtrl.js";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ dbconnect();
 
 //middleware
 
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
