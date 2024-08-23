@@ -6,9 +6,9 @@ function MainLayoutPage({children}) {
   return (
     <div className="app-container flex overflow-hidden">
       <SideBar />
-      <div className="main-content ml-[20%] w-[80%] pt-[8%] overflow-x-auto">
+      <div className="main-content ml-[20%] w-[80%] pt-[8%] overflow-x-auto bg-[#F0F1F3] h-[100vh]">
         <Header />
-        <div className="content p-3 ml-4">
+        <div className="content p-3 ml-4 ">
           {children}
         </div>
       </div>
