@@ -12,9 +12,13 @@ function SideBar() {
           </div>
           <div class="pl-10">
             <ul class="space-y-8 pt-10">
+            <li class="flex space-x-4 items-center hover:text-indigo-600 cursor-pointer">
+              <img className="h-7 w-7" src="https://img.icons8.com/color/48/control-panel--v2.png" alt="package"/>
+                <a href="/">Dashboard</a>
+              </li>
               <li class="flex space-x-4 items-center hover:text-indigo-600 cursor-pointer">
               <img className="h-7 w-7" src="https://img.icons8.com/color/48/package.png" alt="package"/>
-                <a href="/">Items</a>
+                <a href="/items">Items</a>
               </li>
               <li class="flex space-x-4 items-center hover:text-indigo-600 cursor-pointer">
               <img className="h-7 w-7" src="https://img.icons8.com/fluency/48/order-completed.png" alt="order-completed"/>

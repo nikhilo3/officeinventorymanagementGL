@@ -7,6 +7,7 @@ import Items from "./pages/Items";
 import Order from "./pages/Order";
 import IssueItem from "./pages/IssueItem";
 import ReturnItem from "./pages/ReturnItem";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
 
-        <Route path="/" element={<MainLayoutPage><Items/></MainLayoutPage>} />
+        <Route path="/" element={<MainLayoutPage><Dashboard/></MainLayoutPage>} />
+        <Route path="/items" element={<MainLayoutPage><Items/></MainLayoutPage>} />
         <Route path="/order" element={<MainLayoutPage><Order/></MainLayoutPage>} />
         <Route path="/issueitem" element={<MainLayoutPage><IssueItem/></MainLayoutPage>} />
         <Route path="/returnitem" element={<MainLayoutPage><ReturnItem/></MainLayoutPage>} />
