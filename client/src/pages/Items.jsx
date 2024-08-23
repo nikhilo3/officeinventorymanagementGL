@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import PopupFormItem from "../components/PopupFormItem";
 
 function Items() {
   const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const [showPopup, setShowPopup] = useState(false);
+
   const products = [
     {
       id: 1,
@@ -41,7 +45,7 @@ function Items() {
 
   const handleCheckboxChange = (product) => {
     setSelectedProducts((prevSelected) =>
-      prevSelected.some((p)=> p.id === product.id)
+      prevSelected.some((p) => p.id === product.id)
         ? prevSelected.filter((p) => p.id !== product.id)
         : [
             ...prevSelected,
@@ -56,7 +60,7 @@ function Items() {
     <>
       <div className="p-2">
         <div className="flex justify-end mb-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>{setShowPopup(true)}}>
             Add Items
           </button>
         </div>
@@ -114,7 +118,9 @@ function Items() {
                         type="checkbox"
                         className="form-checkbox"
                         onChange={() => handleCheckboxChange(product)}
-                        checked={selectedProducts.some((p)=>p.id === product.id)}
+                        checked={selectedProducts.some(
+                          (p) => p.id === product.id
+                        )}
                       />
                     </td>
                     <td className="py-2 px-4 border-b">{product.id}</td>
@@ -137,6 +143,8 @@ function Items() {
           </div>
         </div>
       </div>
+
+      {showPopup && <PopupFormItem setpopup={setShowPopup}/>}
     </>
   );
 }
