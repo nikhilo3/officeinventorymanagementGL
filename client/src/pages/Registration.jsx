@@ -1,7 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import ggsvg from "../assets/images/gg.svg";
+import { api } from "../config/api";
+import { useNavigate } from "react-router";
 
-function Registration() {
+function Registration(props) {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phonenumber: "",
+    password: "",
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegi = (e) => {
+    e.preventDefault();
+    handleApi(formData);
+  };
+
+  const handleApi = async (data) => {
+    console.log("Registration form Data=", data);
+
+    try {
+      const response = await api.post("/user/create", JSON.stringify(data));
+      console.log("registration responce=", response.data);
+
+      if (response.status === 200) {
+        console.log("Registration successful, calling onlogin...");
+        props.onlogin(); // Ensure this sets the login state correctly
+        console.log("onlogin called, navigating to home...");
+        navigate("/"); // Navigate to home page after successful registration
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        if (error.response.data.message === "User already registerd") {
+          alert("user already registred");
+        } else {
+          alert("form submission failed");
+        }
+      }
+    }
+  };
+
   return (
     <>
       <style>
@@ -31,14 +75,17 @@ function Registration() {
             </div>
 
             <div className="form">
-              <form action="">
+              <form onSubmit={handleRegi}>
                 <div className="inputfeilds grid grid-cols-2 gap-3 mr-10 gap-x-7">
                   <div className="form-group flex flex-col">
                     <label className="form-label">Username</label>
                     <input
                       type="text"
                       className="form-control"
+                      name="username"
                       placeholder="Username"
+                      onChange={handleInputChange}
+                      value={formData.username}
                       required
                     />
                   </div>
@@ -49,6 +96,9 @@ function Registration() {
                       type="number"
                       className="form-control"
                       placeholder="Phone Number"
+                      name="phonenumber"
+                      onChange={handleInputChange}
+                      value={formData.phonenumber}
                       required
                       onInput={(e) => {
                         if (e.target.value.length > 10) {
@@ -64,6 +114,9 @@ function Registration() {
                       type="email"
                       className="form-control"
                       placeholder="Email"
+                      name="email"
+                      onChange={handleInputChange}
+                      value={formData.email}
                       required
                     />
                   </div>
@@ -74,6 +127,9 @@ function Registration() {
                       type="password"
                       className="form-control"
                       placeholder="Password"
+                      name="password"
+                      onChange={handleInputChange}
+                      value={formData.password}
                       required
                     />
                   </div>
@@ -90,13 +146,21 @@ function Registration() {
                 </div>
 
                 <div className="btn mt-6">
-                  <button className="btn bg-indigo-600 px-9  hover:bg-indigo-500 transition-all">
+                  <button
+                    type="submit"
+                    className="btn bg-indigo-600 px-9  hover:bg-indigo-500 transition-all"
+                  >
                     Register
                   </button>
                 </div>
 
                 <div className="already mt-6">
-                  <p className="text-gray-500">Already have an account?  <a href="#" className="text-blue-800">Login</a> </p> 
+                  <p className="text-gray-500">
+                    Already have an account?{" "}
+                    <a href="/login" className="text-blue-800">
+                      Login
+                    </a>{" "}
+                  </p>
                 </div>
               </form>
             </div>

@@ -28,7 +28,14 @@ userroutes.post('/create', async (req, res) => {
 
         await newUser.save();
 
-        return res.status(200).json({ success: true, user: newUser })
+        const authToken = generateToken(user?._id);
+
+        res.cookie('authToken', authToken, {
+            httpOnly: true,
+            maxAge: 72 * 60 * 60 * 1000
+        })
+
+        return res.status(200).json({ success: true, user: newUser, authToken: authToken })
     } catch (error) {
         return res.status(400).json({ success: false, message: error.message, stack: error.stack })
     }
@@ -57,7 +64,8 @@ userroutes.post('/login', async (req, res) => {
 
             return res.status(200).json({
                 success: true, message: "login successfull",
-                authToken: authToken
+                authToken: authToken,
+                user
             })
         } else {
             throw new Error('password incorrect')
@@ -71,13 +79,13 @@ userroutes.post('/login', async (req, res) => {
 userroutes.post('/logout', async (req, res) => {
     try {
         const cookies = req.cookies
-        if(!cookies.authToken){
+        if (!cookies.authToken) {
             return res.status(401).json({ success: false, message: "you are not logged in" });
         }
 
-        res.clearCookie('authToken',{
-            httpOnly:true,
-            secure:true
+        res.clearCookie('authToken', {
+            httpOnly: true,
+            secure: true
         })
         return res.json({ success: true, message: "logout successfully" });
 

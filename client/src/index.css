@@ -6,6 +6,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   /* line-height: 1.5; */
   /* color-scheme: light dark; */
+  -webkit-font-smoothing: antialiased;
   color: #242424;
   background-color: rgba(255, 255, 255, 0.87);
 }

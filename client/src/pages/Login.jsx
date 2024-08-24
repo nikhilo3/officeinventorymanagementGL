@@ -1,7 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import ggsvg from "../assets/images/gg.svg";
+import { useNavigate } from "react-router";
+import { api } from "../config/api";
 
-function Login() {
+function Login(props) {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegi = (e) => {
+    e.preventDefault();
+    handleApi(formData);
+  };
+
+  const handleApi = async (data) => {
+    console.log("Registration form Data=", data);
+
+    try {
+      const response = await api.post("/user/login", JSON.stringify(data));
+      console.log("registration responce=", response.data);
+
+      if (response.status === 200) {
+        console.log("Registration successful, calling onlogin");
+        props.onlogin(); // Ensure this sets the login state correctly
+        console.log("onlogin called, navigating to home");
+        navigate("/"); // Navigate to home page after successful registration
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        if (error.response.data.message === "user not found") {
+          alert("user not found");
+        } else {
+          alert("form submission failed");
+        }
+      }
+    }
+  };
   return (
     <>
       <style>
@@ -32,7 +73,7 @@ function Login() {
             </div>
 
             <div className="form">
-              <form action="">
+              <form onSubmit={handleRegi}>
                 <div className="inputfeilds grid grid-cols-1 gap-3 mr-10 gap-x-7">
                   <div className="form-group flex flex-col">
                     <label className="form-label">Email</label>
@@ -40,6 +81,9 @@ function Login() {
                       type="email"
                       className="form-control"
                       placeholder="Email"
+                      name="email"
+                      onChange={handleInputChange}
+                      value={formData.email}
                       required
                     />
                   </div>
@@ -50,6 +94,9 @@ function Login() {
                       type="password"
                       className="form-control"
                       placeholder="Password"
+                      name="password"
+                      onChange={handleInputChange}
+                      value={formData.password}
                       required
                     />
                   </div>
@@ -69,7 +116,10 @@ function Login() {
                 </div>
 
                 <div className="btn mt-4">
-                  <button className="btn bg-indigo-600 px-9 hover:bg-indigo-500 transition-all">
+                  <button
+                    type="submit"
+                    className="btn bg-indigo-600 px-9 hover:bg-indigo-500 transition-all"
+                  >
                     Login
                   </button>
                 </div>
@@ -77,7 +127,7 @@ function Login() {
                 <div className="already mt-6">
                   <p className="text-gray-500">
                     Not Registred Yet?{" "}
-                    <a href="#" className="text-blue-800">
+                    <a href="/registration" className="text-blue-800">
                       create a new account
                     </a>{" "}
                   </p>

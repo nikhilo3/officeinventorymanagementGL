@@ -31,7 +31,7 @@ function Dashboard() {
       label: "Weekly Sales",
     },
     {
-      id: 4,
+      id: 5,
       color: "bg-red-200",
       icon: "🤖", // Replace with actual icon
       number: "714k",

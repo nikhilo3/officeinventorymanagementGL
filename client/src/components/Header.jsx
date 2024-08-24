@@ -1,6 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router";
 
-function Header() {
+function Header({ onLogout, isLogin }) {
+  console.log("header isLogin:", isLogin);
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="flex header h-[89.39px]">
@@ -30,40 +34,46 @@ function Header() {
               />
             </div>
 
-            {/* <div className="relative flex items-center ml-4 mr-8">
-              <div className="profilecontainer flex flex-col justify-center items-center">
-                <img
-                  width="40"
-                  height="40"
-                  src="https://img.icons8.com/3d-fluency/94/user-male-circle.png"
-                  alt="user-male-circle"
-                />
-                <span className=" font-bold mt-1">Nikhil Ladani</span>
+            {isLogin && (
+              <div className="relative flex items-center ml-4 mr-8">
+                <div className="profilecontainer flex flex-col justify-center items-center">
+                  <img
+                    width="40"
+                    height="40"
+                    src="https://img.icons8.com/3d-fluency/94/user-male-circle.png"
+                    alt="user-male-circle"
+                  />
+                  <span className=" font-bold mt-1">Nikhil Ladani</span>
+                </div>
+                <a
+                  href="#"
+                  className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-500"
+                  onClick={() => {
+                    onLogout();
+                    navigate("/login");
+                  }}
+                >
+                  Logout
+                </a>
               </div>
-              <a
-                href="#"
-                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-500"
-              >
-                Logout
-              </a>
-            </div> */}
+            )}
 
-            <div className="items-center text-lg flex mr-8">
-              <a
-                href="/login"
-                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-600 hover:bg-gray-500"
-              >
-                Sign in
-              </a>
-              <a
-                href="/registration"
-                className="ml-6 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-500"
-              >
-                Sign up
-              </a>
-            </div>
-
-
+            {!isLogin && (
+              <div className="items-center text-lg flex mr-8">
+                <a
+                  href="/login"
+                  className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-600 hover:bg-gray-500"
+                >
+                  Sign in
+                </a>
+                <a
+                  href="/registration"
+                  className="ml-6 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-500"
+                >
+                  Sign up
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
