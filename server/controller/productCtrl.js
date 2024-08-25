@@ -28,10 +28,10 @@ productrouter.get('/get', verifytoken, async (req, res) => {
     }
 });
 
-productrouter.delete('/remove', verifytoken, async (req, res) => {
+productrouter.delete('/remove/:id', verifytoken, async (req, res) => {
 
     try {
-        const { id } = req.body;
+        const id = req.params.id;
         if (!id) {
             return res.status(400).json({ success: false, message: "Please provide product id" });
         }
@@ -43,10 +43,10 @@ productrouter.delete('/remove', verifytoken, async (req, res) => {
     }
 });
 
-productrouter.put('/update', verifytoken, async (req, res) => {
+productrouter.put('/update/:id', verifytoken, async (req, res) => {
 
     try {
-        const { id } = req.body;
+        const id = req.params.id;
         if (!id) {
             return res.status(400).json({ success: false, message: "Please provide product id" });
         }

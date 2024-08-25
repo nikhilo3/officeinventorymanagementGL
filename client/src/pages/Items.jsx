@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import PopupFormItem from "../components/PopupFormItem";
 import { api } from "../config/api";
+import { Bounce, toast } from "react-toastify";
+import EditFormItem from "../components/EditFormItem";
 
 function Items() {
   const [selectedProducts, setSelectedProducts] = useState([]);
-
   const [showPopup, setShowPopup] = useState(false);
-
   const [items, setItems] = useState(null);
+
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   useEffect(() => {
     handleItemFetch();
@@ -55,6 +58,31 @@ function Items() {
             },
           ]
     );
+  };
+
+  const handleDeleteItem = async (itemid) => {
+    console.log("handle item called");
+    console.log("handle item calledwith id", itemid);
+
+    try {
+      const response = await api.delete(`/product/remove/${itemid}`);
+      if (response.status === 200) {
+        toast.success("Item deleted Success!", {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        handleItemFetch();
+      }
+    } catch (error) {
+      console.log("error while delete item", error);
+    }
   };
 
   console.log(selectedProducts);
@@ -109,6 +137,7 @@ function Items() {
                     Stock In Date
                   </th>
                   <th className="py-2 px-4 border-b text-left">Availability</th>
+                  <th className="py-2 px-4 border-b text-left"></th>
                 </tr>
               </thead>
               <tbody>
@@ -146,6 +175,33 @@ function Items() {
                     >
                       {handleAvailability(item)}
                     </td>
+                    <td className="py-2 px-4 border-b">
+                      <button
+                        className="bg-transparent border-none p-0 shadow-none"
+                        onClick={() => {
+                          handleDeleteItem(item._id);
+                        }}
+                      >
+                        <img
+                          className="h-6 w-6"
+                          src="https://img.icons8.com/color/48/delete-forever.png"
+                          alt="delete-forever"
+                        />
+                      </button>
+                      <button
+                        className="ml-2 bg-transparent border-none p-0 shadow-none"
+                        onClick={() => {
+                          setEditItem(item);
+                          setShowEditPopup(true);
+                        }}
+                      >
+                        <img
+                          className="h-6 w-6"
+                          src="https://img.icons8.com/color/48/edit--v1.png"
+                          alt="edit"
+                        />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -154,7 +210,20 @@ function Items() {
         </div>
       </div>
 
-      {showPopup && <PopupFormItem setpopup={setShowPopup} handleItemFetch={handleItemFetch}/>}
+      {showPopup && (
+        <PopupFormItem
+          setpopup={setShowPopup}
+          handleItemFetch={handleItemFetch}
+        />
+      )}
+
+      {showEditPopup && (
+        <EditFormItem
+          item={editItem}
+          setShowEditPopup={setShowEditPopup}
+          handleItemFetch={handleItemFetch}
+        />
+      )}
     </>
   );
 }
