@@ -1,60 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FormReturn from '../components/FormReturn';
+import { api } from '../config/api';
 
 function ReturnItem() {
 
   const [showPopup,setShowPopup] = useState(false)
 
-  const products = [
-    {
-      id: 1,
-      departmentname: "Maggi",
-      orderDate: "11/12/22",
-      reason:'meri marji..',
-      items: [
-        {
-          itemname: "iphone",
-          quantity: 55,
-        },
-        {
-          itemname: "hshdf",
-          quantity: 22,
-        },
-      ],
-    },
-    {
-      id: 2,
-      departmentname: "Maggi",
-      orderDate: "11/12/22",
-      reason:'meri marji..',
-      items: [
-        {
-          itemname: "iphone",
-          quantity: 55,
-        },
-        {
-          itemname: "hshdf",
-          quantity: 22,
-        },
-      ],
-    },
-    {
-      id: 3,
-      departmentname: "Maggi",
-      orderDate: "11/12/22",
-      reason:'meri marji..',
-      items: [
-        {
-          itemname: "iphone",
-          quantity: 55,
-        },
-        {
-          itemname: "hshdf",
-          quantity: 22,
-        },
-      ],
-    },
-  ];
+  const [retrunItem,setreturnItem] = useState(null);
+
+  useEffect(()=>{
+    handleFetchreturnItem()
+  },[])
+
+  const handleFetchreturnItem =async ()=>{
+    const {data} = await api.get('/returnitem/get');
+    
+    console.log(data.returnedItems);
+
+    setreturnItem(data.returnedItems)
+    
+  }
   return (
     <>
     <div className="p-2">
@@ -80,17 +45,17 @@ function ReturnItem() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product, index) => (
+              {retrunItem?.map((product, index) => (
                 <tr key={index}>
-                  <td className="py-2 px-4 border-b">{product.id}</td>
-                  <td className="py-2 px-4 border-b">{product.departmentname}</td>
+                  <td className="py-2 px-4 border-b">{product._id}</td>
+                  <td className="py-2 px-4 border-b">{product.departmentName}</td>
                   <td className="py-2 px-4 border-b">{product.items.map((p,i)=>{
                     return <span key={i}>
-                      {p.itemname} ({p.quantity})
+                      {p.item.productname} ({p.quantity})
                       <br/>
                     </span>
                   })}</td>
-                  <td className="py-2 px-4 border-b">{product.orderDate}</td>
+                  <td className="py-2 px-4 border-b">{new Date(product.returnDate).toLocaleString('en-US',{dateStyle:'long'})}</td>
                   <td className="py-2 px-4 border-b">{product.reason}</td>
                 </tr>
               ))}

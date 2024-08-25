@@ -1,14 +1,39 @@
 import React, { useEffect, useState } from "react";
+import { api } from "../config/api";
+import { Bounce, toast } from "react-toastify";
 
-function PopupFormItem({ setpopup }) {
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let form = e.target;
-    let formData = new FormData(form);
-    let formObj = Object.fromEntries(formData.entries());
-    console.log(formObj);
+function PopupFormItem({ setpopup ,handleItemFetch}) {
+  const [formData, setFormData] = useState({
+    productname: "",
+    quantity: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("/product/add", JSON.stringify(formData));
+      toast.success("Item Added Successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      console.log("item added", response);
+      setpopup(false);
+      handleItemFetch();
+    } catch (error) {
+      console.log('faild to add product',error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-[200] h-screen">
@@ -20,6 +45,8 @@ function PopupFormItem({ setpopup }) {
             <input
               type="text"
               name="productname"
+              onChange={handleChange}
+              value={formData.productname}
               className="w-full px-3 py-2 border rounded"
             />
           </div>
@@ -29,6 +56,8 @@ function PopupFormItem({ setpopup }) {
             <input
               type="number"
               name="quantity"
+              onChange={handleChange}
+              value={formData.quantity}
               className="w-full px-3 py-2 border rounded"
             />
           </div>
@@ -41,6 +70,7 @@ function PopupFormItem({ setpopup }) {
               Discard
             </button>
             <button
+              type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded"
             >
               Add Product

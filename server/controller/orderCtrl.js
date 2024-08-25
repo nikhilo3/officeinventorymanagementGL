@@ -16,7 +16,6 @@ orderRouter.post('/create', verifytoken, async (req, res) => {
 
         let newOrder = new Order({
             productname,
-            orderStatus: 'Pending',
             orderBy: user._id,
             supplierName,
             quantity
@@ -38,6 +37,18 @@ orderRouter.post('/updatestatus', verifytoken, async (req, res) => {
         await Order.findOneAndUpdate({ _id: id }, { orderStatus: orderStatus }, { new: true })
 
         res.status(200).json({ success: true, message: 'status change Successfull' })
+    } catch (error) {
+        return res.status(400).json({ success: false, message: error.message, stack: error.stack })
+    }
+})
+
+
+orderRouter.get('/get', verifytoken, async (req, res) => {
+    try {
+
+        const orders = await Order.find().populate('orderBy');
+
+        res.status(200).json({ success: true, orders })
     } catch (error) {
         return res.status(400).json({ success: false, message: error.message, stack: error.stack })
     }

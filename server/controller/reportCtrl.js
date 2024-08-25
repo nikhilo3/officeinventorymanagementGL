@@ -38,7 +38,7 @@ reportRouter.get('/issueitems', async (req, res) => {
     try {
         const totalIssueItem = await IssueItem.countDocuments();
 
-        return res.status(200).json({ totalProduct })
+        return res.status(200).json({ totalIssueItem })
     } catch (error) {
         return res.status(400).json({ success: false, message: error.message, stack: error.stack })
     }

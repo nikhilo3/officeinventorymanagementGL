@@ -11,7 +11,7 @@ var issueSchema = new mongoose.Schema({
             quantity: { type: Number }
         }
     ]
-}, { Timestamp: true })
+}, { timestamps: true })
 
 let IssueItem = mongoose.model('IssueItem', issueSchema);
 

@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router";
 
 function Header({ onLogout, isLogin }) {
-  console.log("header isLogin:", isLogin);
   const navigate = useNavigate();
 
   return (

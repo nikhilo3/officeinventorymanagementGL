@@ -14,24 +14,45 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   const [isLogin, setIsLogin] = useState(false);
 
+  const getToken = () => {
+    const token = localStorage.getItem("authToken");
+    const expiryTime = localStorage.getItem("authTokenExpiry");
+  
+    if (token && expiryTime) {
+      if (new Date().getTime() > parseInt(expiryTime, 10)) {
+        // Token is expired
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("authTokenExpiry");
+        return null;
+      }
+      return token;
+    }
+    return null;
+  };
+
   useEffect(() => {
-    const userIsLogin = localStorage.getItem("isLogin");
-    if (userIsLogin === "true") {
+    const userIsLogin = getToken()
+    
+    if (userIsLogin) {
       setIsLogin(true);
     }
   }, []);
 
-  const handleLogin = () => {
+
+
+
+  const handleLogin = (data) => {
     setIsLogin(true);
-    localStorage.setItem("isLogin", "true");
+    const expiryTime = new Date().getTime() + (72 * 60 * 60 * 1000); // 72 hours
+    localStorage.setItem("authToken", data.authToken);
+    localStorage.setItem("authTokenExpiry", expiryTime);
   };
 
   const handleLogout = () => {
     setIsLogin(false);
-    localStorage.setItem("isLogin", "false");
+    localStorage.removeItem("authToken");
   };
 
-  console.log('app is login',isLogin);
   
 
   return (
@@ -55,7 +76,7 @@ function App() {
         <Route
           path="/items"
           element={
-            <ProtectedRoute isLogin={isLogin}>
+            <ProtectedRoute>
               <MainLayoutPage onLogout={handleLogout} isLogin={isLogin}>
                 <Items />
               </MainLayoutPage>
@@ -65,7 +86,7 @@ function App() {
         <Route
           path="/order"
           element={
-            <ProtectedRoute isLogin={isLogin}>
+            <ProtectedRoute>
               <MainLayoutPage onLogout={handleLogout} isLogin={isLogin}>
                 <Order />
               </MainLayoutPage>
@@ -75,7 +96,7 @@ function App() {
         <Route
           path="/issueitem"
           element={
-            <ProtectedRoute isLogin={isLogin}>
+            <ProtectedRoute>
               <MainLayoutPage onLogout={handleLogout} isLogin={isLogin}>
                 <IssueItem />
               </MainLayoutPage>
@@ -85,7 +106,7 @@ function App() {
         <Route
           path="/returnitem"
           element={
-            <ProtectedRoute isLogin={isLogin}>
+            <ProtectedRoute>
               <MainLayoutPage onLogout={handleLogout} isLogin={isLogin}>
                 <ReturnItem />
               </MainLayoutPage>

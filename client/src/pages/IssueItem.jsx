@@ -1,53 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { api } from "../config/api";
 
 function IssueItem() {
-  const products = [
-    {
-      id: 1,
-      departmentname: "Maggi",
-      orderDate: "11/12/22",
-      items: [
-        {
-          itemname: "iphone",
-          quantity: 55,
-        },
-        {
-          itemname: "hshdf",
-          quantity: 22,
-        },
-      ],
-    },
-    {
-      id: 2,
-      departmentname: "Maggi",
-      orderDate: "11/12/22",
-      items: [
-        {
-          itemname: "iphone",
-          quantity: 55,
-        },
-        {
-          itemname: "hshdf",
-          quantity: 22,
-        },
-      ],
-    },
-    {
-      id: 3,
-      departmentname: "Maggi",
-      orderDate: "11/12/22",
-      items: [
-        {
-          itemname: "iphone",
-          quantity: 55,
-        },
-        {
-          itemname: "hshdf",
-          quantity: 22,
-        },
-      ],
-    },
-  ];
+
+  const [issueItem,setIssueItem] = useState(null);
+
+  useEffect(()=>{
+    handleFetchIssueItem()
+  },[])
+
+  const handleFetchIssueItem =async ()=>{
+    const {data} = await api.get('/issueitem/get');
+
+    setIssueItem(data.getissueitem)
+    
+  }
+
   return (
     <div className="p-2">
       <div className="flex justify-end mb-4">
@@ -71,17 +39,17 @@ function IssueItem() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product, index) => (
+              {issueItem?.map((product, index) => (
                 <tr key={index}>
-                  <td className="py-2 px-4 border-b">{product.id}</td>
-                  <td className="py-2 px-4 border-b">{product.departmentname}</td>
+                  <td className="py-2 px-4 border-b">{product._id}</td>
+                  <td className="py-2 px-4 border-b">{product.departmentName}</td>
                   <td className="py-2 px-4 border-b">{product.items.map((p,i)=>{
                     return <span key={i}>
-                      {p.itemname} ({p.quantity})
+                      {p.itemid.productname} ({p.quantity})
                       <br/>
                     </span>
                   })}</td>
-                  <td className="py-2 px-4 border-b">{product.orderDate}</td>
+                  <td className="py-2 px-4 border-b">{new Date(product.createdAt).toLocaleString('en-US',{dateStyle:'long'})}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,34 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PopupFormItem from "../components/PopupFormItem";
+import { api } from "../config/api";
 
 function Items() {
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
 
-  const products = [
-    {
-      id: 1,
-      name: "Maggi",
-      quantity: "43",
-      StockInDate: "11/12/22",
-      availblity: "In-stock",
-    },
-    {
-      id: 2,
-      name: "Maggi",
-      quantity: "43",
-      StockInDate: "11/12/22",
-      availblity: "In-stock",
-    },
-    {
-      id: 3,
-      name: "Maggi",
-      quantity: "43",
-      StockInDate: "11/12/22",
-      availblity: "In-stock",
-    },
-  ];
+  const [items, setItems] = useState(null);
+
+  useEffect(() => {
+    handleItemFetch();
+  }, []);
+
+  const handleItemFetch = async () => {
+    const { data } = await api.get("/product/get");
+
+    setItems(data.products);
+  };
+
+  const handleAvailability = (item) => {
+    if (item.quantity === 0) {
+      return "Out of stock";
+    } else if (item.quantity <= 10) {
+      return "Low stock";
+    } else {
+      return "In-stock";
+    }
+  };
 
   const getStatusClass = (status) => {
     switch (status) {
@@ -45,11 +44,15 @@ function Items() {
 
   const handleCheckboxChange = (product) => {
     setSelectedProducts((prevSelected) =>
-      prevSelected.some((p) => p.id === product.id)
-        ? prevSelected.filter((p) => p.id !== product.id)
+      prevSelected.some((p) => p._id === product._id)
+        ? prevSelected.filter((p) => p._id !== product._id)
         : [
             ...prevSelected,
-            { id: product.id, name: product.name, quantity: product.quantity },
+            {
+              _id: product._id,
+              productname: product.productname,
+              quantity: product.quantity,
+            },
           ]
     );
   };
@@ -60,7 +63,12 @@ function Items() {
     <>
       <div className="p-2">
         <div className="flex justify-end mb-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>{setShowPopup(true)}}>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => {
+              setShowPopup(true);
+            }}
+          >
             Add Items
           </button>
         </div>
@@ -76,10 +84,10 @@ function Items() {
                       onChange={(e) => {
                         if (e.target.checked) {
                           setSelectedProducts(
-                            products.map((p) => {
+                            items?.map((p) => {
                               return {
-                                id: p.id,
-                                name: p.name,
+                                id: p._id,
+                                name: p.productname,
                                 quantity: p.quantity,
                               };
                             })
@@ -89,8 +97,8 @@ function Items() {
                         }
                       }}
                       checked={
-                        selectedProducts.length === products.length &&
-                        products.length > 0
+                        selectedProducts.length === items?.length &&
+                        items?.length > 0
                       }
                     />
                   </th>
@@ -104,11 +112,11 @@ function Items() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product, index) => (
+                {items?.map((item, index) => (
                   <tr
                     key={index}
                     className={
-                      selectedProducts.some((p) => p.id === product.id)
+                      selectedProducts.some((p) => p._id === item._id)
                         ? "bg-gray-100"
                         : ""
                     }
@@ -117,24 +125,26 @@ function Items() {
                       <input
                         type="checkbox"
                         className="form-checkbox"
-                        onChange={() => handleCheckboxChange(product)}
+                        onChange={() => handleCheckboxChange(item)}
                         checked={selectedProducts.some(
-                          (p) => p.id === product.id
+                          (p) => p._id === item._id
                         )}
                       />
                     </td>
-                    <td className="py-2 px-4 border-b">{product.id}</td>
-                    <td className="py-2 px-4 border-b">{product.name}</td>
-                    <td className="py-2 px-4 border-b">{product.quantity}</td>
+                    <td className="py-2 px-4 border-b">{item._id}</td>
+                    <td className="py-2 px-4 border-b">{item.productname}</td>
+                    <td className="py-2 px-4 border-b">{item.quantity}</td>
                     <td className="py-2 px-4 border-b">
-                      {product.StockInDate}
+                      {new Date(item.createdAt).toLocaleString("en-US", {
+                        dateStyle: "long",
+                      })}
                     </td>
                     <td
                       className={`py-2 px-4 border-b ${getStatusClass(
-                        product.availblity
+                        handleAvailability(item)
                       )}`}
                     >
-                      {product.availblity}
+                      {handleAvailability(item)}
                     </td>
                   </tr>
                 ))}
@@ -144,7 +154,7 @@ function Items() {
         </div>
       </div>
 
-      {showPopup && <PopupFormItem setpopup={setShowPopup}/>}
+      {showPopup && <PopupFormItem setpopup={setShowPopup} handleItemFetch={handleItemFetch}/>}
     </>
   );
 }

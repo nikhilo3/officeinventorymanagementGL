@@ -1,42 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormOrder from "../components/FormOrder";
+import { api } from "../config/api";
 
 function Order() {
   const [showPopup, setShowPopup] = useState(false);
 
-  const products = [
-    {
-      id: 1,
-      name: "Maggi",
-      quantity: "43",
-      supplierName: "kiran",
-      orderBy: "nikhil",
-      orderDate: "11/12/22",
-      orderStatus: "Pending",
-    },
-    {
-      id: 2,
-      name: "Maggi",
-      quantity: "43",
-      supplierName: "kiran",
-      orderBy: "nikhil",
-      orderDate: "11/12/22",
-      orderStatus: "Deliverd",
-    },
-    {
-      id: 3,
-      name: "Maggi",
-      quantity: "43",
-      supplierName: "kiran",
-      orderBy: "nikhil",
-      orderDate: "11/12/22",
-      orderStatus: "Pending",
-    },
-  ];
+  const [order, setOrder] = useState(null);
+
+  useEffect(() => {
+    handleOrderFetch();
+  }, []);
+
+  const handleOrderFetch = async () => {
+    const { data } = await api.get("/order/get");
+    setOrder(data.orders);
+  };
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Deliverd":
+      case "deliverd":
         return "text-green-500";
       case "Pending":
         return "text-yellow-500";
@@ -49,7 +31,12 @@ function Order() {
     <>
       <div className="p-2">
         <div className="flex justify-end mb-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>{setShowPopup(true)}}>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => {
+              setShowPopup(true);
+            }}
+          >
             New Order
           </button>
         </div>
@@ -68,22 +55,26 @@ function Order() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product, index) => (
+                {order?.map((order, index) => (
                   <tr key={index}>
-                    <td className="py-2 px-4 border-b">{product.id}</td>
-                    <td className="py-2 px-4 border-b">{product.name}</td>
-                    <td className="py-2 px-4 border-b">{product.quantity}</td>
+                    <td className="py-2 px-4 border-b">{order._id}</td>
+                    <td className="py-2 px-4 border-b">{order.productname}</td>
+                    <td className="py-2 px-4 border-b">{order.quantity}</td>
+                    <td className="py-2 px-4 border-b">{order.supplierName}</td>
                     <td className="py-2 px-4 border-b">
-                      {product.supplierName}
+                      {order.orderBy.username}
                     </td>
-                    <td className="py-2 px-4 border-b">{product.orderBy}</td>
-                    <td className="py-2 px-4 border-b">{product.orderDate}</td>
+                    <td className="py-2 px-4 border-b">
+                      {new Date(order.createdAt).toLocaleString("en-US", {
+                        dateStyle: "long",
+                      })}
+                    </td>
                     <td
                       className={`py-2 px-4 border-b ${getStatusClass(
-                        product.orderStatus
+                        order.orderStatus
                       )}`}
                     >
-                      {product.orderStatus}
+                      {order.orderStatus}
                     </td>
                   </tr>
                 ))}
@@ -92,7 +83,7 @@ function Order() {
           </div>
         </div>
       </div>
-      {showPopup && <FormOrder setShowPopup={setShowPopup} />}
+      {showPopup && <FormOrder setShowPopup={setShowPopup} handleOrderFetch={handleOrderFetch}/>}
     </>
   );
 }

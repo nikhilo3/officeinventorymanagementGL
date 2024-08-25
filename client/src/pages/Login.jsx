@@ -29,7 +29,7 @@ function Login(props) {
 
       if (response.status === 200) {
         console.log("Registration successful, calling onlogin");
-        props.onlogin(); // Ensure this sets the login state correctly
+        props.onlogin(response.data); // Ensure this sets the login state correctly
         console.log("onlogin called, navigating to home");
         navigate("/"); // Navigate to home page after successful registration
       }

@@ -29,7 +29,7 @@ issueItemRouter.post('/', verifytoken,async (req, res) => {
         })
 
         await issueItem.save();
-        res.status(201).json({ message: "Issue item successfully" });
+        res.status(201).json({ message: "Issue item successfully", issueItem });
 
     } catch (error) {
         return res.status(400).json({ success: false, message: error.message, stack: error.stack })
