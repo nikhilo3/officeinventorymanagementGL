@@ -3,14 +3,21 @@ import PopupFormItem from "../components/PopupFormItem";
 import { api } from "../config/api";
 import { Bounce, toast } from "react-toastify";
 import EditFormItem from "../components/EditFormItem";
+import IssueItemForm from "../components/IssueItemForm";
 
 function Items() {
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [isSelected, setIsSelected] = useState(false);
+
   const [showPopup, setShowPopup] = useState(false);
+
   const [items, setItems] = useState(null);
 
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editItem, setEditItem] = useState(null);
+
+  const [showIssueForm, setShowIssueForm] = useState(false);
+
 
   useEffect(() => {
     handleItemFetch();
@@ -18,7 +25,6 @@ function Items() {
 
   const handleItemFetch = async () => {
     const { data } = await api.get("/product/get");
-
     setItems(data.products);
   };
 
@@ -85,12 +91,25 @@ function Items() {
     }
   };
 
-  console.log(selectedProducts);
+ 
+
+  console.log("selectedProducts =",selectedProducts);
 
   return (
     <>
       <div className="p-2">
         <div className="flex justify-end mb-4">
+          {isSelected && (
+            <button
+              className="bg-blue-500 mr-4 text-white px-4 py-2 rounded"
+              onClick={() => {
+                setShowIssueForm(true);
+              }}
+            >
+              Issue Items
+            </button>
+          )}
+
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
@@ -102,7 +121,13 @@ function Items() {
         </div>
         <div className="bg-white shadow-md rounded-lg">
           <div className="overflow-y-auto h-full">
-            <table className="min-w-full bg-white">
+            <table
+              className={`min-w-full ${
+                selectedProducts.length === items?.length && items?.length > 0
+                  ? "bg-gray-100"
+                  : ""
+              }`}
+            >
               <thead>
                 <tr>
                   <th className="py-2 px-4 border-b text-left">
@@ -120,8 +145,10 @@ function Items() {
                               };
                             })
                           );
+                          setIsSelected(true);
                         } else {
                           setSelectedProducts([]);
+                          setIsSelected(false);
                         }
                       }}
                       checked={
@@ -154,7 +181,14 @@ function Items() {
                       <input
                         type="checkbox"
                         className="form-checkbox"
-                        onChange={() => handleCheckboxChange(item)}
+                        onChange={(e) => {
+                          handleCheckboxChange(item);
+                          if (e.target.checked) {
+                            setIsSelected(true);
+                          } else {
+                            setIsSelected(false);
+                          }
+                        }}
                         checked={selectedProducts.some(
                           (p) => p._id === item._id
                         )}
@@ -221,6 +255,14 @@ function Items() {
         <EditFormItem
           item={editItem}
           setShowEditPopup={setShowEditPopup}
+          handleItemFetch={handleItemFetch}
+        />
+      )}
+
+      {showIssueForm && (
+        <IssueItemForm
+          selectedProducts={selectedProducts}
+          setShowIssueForm={setShowIssueForm}
           handleItemFetch={handleItemFetch}
         />
       )}
