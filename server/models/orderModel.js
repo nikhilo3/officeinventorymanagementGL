@@ -8,7 +8,7 @@ var orderSchema = new mongoose.Schema({
     orderStatus: {
         type: String,
         default: "Pending",
-        enum: ["Pending", "deliverd"],
+        enum: ["Pending", "deliverd","Cancelled"],
     },
     orderBy: {
         type: mongoose.Schema.Types.ObjectId,

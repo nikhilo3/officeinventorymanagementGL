@@ -8,13 +8,89 @@ function Order() {
 
   const [order, setOrder] = useState(null);
 
+  const [loadingToastId, setLoadingToastId] = useState(null);
+
   useEffect(() => {
     handleOrderFetch();
   }, []);
 
   const handleOrderFetch = async () => {
-    const { data } = await api.get("/order/get");
-    setOrder(data.orders);
+    const toastId = toast.info("Loading Data 🔃!", {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Bounce,
+      isLoading: true,
+    });
+    setLoadingToastId(toastId);
+
+    try {
+      const { data } = await api.get("/order/get");
+      setOrder(data.orders);
+
+      toast.dismiss(toastId);
+
+    } catch (error) {
+      toast.dismiss(toastId);
+
+      toast.error("Failed to Load Data ❌", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
+  };
+
+  const handleStatusChange = async (e, orderid) => {
+    const newStatus = e.target.value;
+
+    try {
+      const response = await api.post(
+        "/order/updatestatus",
+        JSON.stringify({
+          id: orderid,
+          orderStatus: newStatus,
+        })
+      );
+
+      if (response.status === 200) {
+        toast.success("Order Status Change Success!", {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        handleOrderFetch();
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating status.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
   };
 
   const getStatusClass = (status) => {
@@ -23,29 +99,12 @@ function Order() {
         return "text-green-500";
       case "Pending":
         return "text-yellow-500";
+      case "Cancelled":
+        return "text-red-500";
       default:
         return "";
     }
   };
-
-  useEffect(() => {
-    if (!order) {
-      toast.info("Loading Data 🔃!", {
-        position: "top-right",
-        autoClose: false,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-        isLoading: true,
-      });
-    }else{
-      toast.dismiss();
-    }
-  }, [order]);
 
   return (
     <>
@@ -72,6 +131,7 @@ function Order() {
                   <th className="py-2 px-4 border-b text-left">OrderBy</th>
                   <th className="py-2 px-4 border-b text-left">Order Date</th>
                   <th className="py-2 px-4 border-b text-left">order Status</th>
+                  <th className="py-2 px-4 border-b text-left"></th>
                 </tr>
               </thead>
               <tbody>
@@ -96,6 +156,17 @@ function Order() {
                     >
                       {order.orderStatus}
                     </td>
+                    <td className="py-2 px-4 border-b">
+                      <select
+                        value={order.orderStatus}
+                        onChange={(e) => handleStatusChange(e, order._id)}
+                        className="form-select"
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="deliverd">deliverd</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -103,7 +174,12 @@ function Order() {
           </div>
         </div>
       </div>
-      {showPopup && <FormOrder setShowPopup={setShowPopup} handleOrderFetch={handleOrderFetch}/>}
+      {showPopup && (
+        <FormOrder
+          setShowPopup={setShowPopup}
+          handleOrderFetch={handleOrderFetch}
+        />
+      )}
     </>
   );
 }
