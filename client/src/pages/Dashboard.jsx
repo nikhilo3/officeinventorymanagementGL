@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../config/api";
+import { Bounce, toast } from "react-toastify";
 
 function Dashboard() {
   const [inventoryItems, setInventoryitems] = useState(0);
@@ -11,9 +12,6 @@ function Dashboard() {
 
   useEffect(() => {
     handlefetchproduct();
-  }, []);
-
-  useEffect(() => {
     handleinventory();
     handleQuantity();
     handleissue();
@@ -114,7 +112,6 @@ function Dashboard() {
   };
 
   const handleItemsAmount = (data) => {
-
     if (data.products) {
       const filterdItems = data.products.filter((item, index) => {
         return item.quantity <= 10;
@@ -122,6 +119,25 @@ function Dashboard() {
       setProduct(filterdItems);
     }
   };
+
+  useEffect(() => {
+    if (!product && !inventoryItems) {
+      toast.info("Loading Data 🔃!", {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        isLoading: true,
+      });
+    }else{
+      toast.dismiss();
+    }
+  }, [product]);
 
   return (
     <>

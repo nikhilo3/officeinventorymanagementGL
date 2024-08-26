@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PopupFormItem from "../components/PopupFormItem";
 import { api } from "../config/api";
-import { Bounce, toast } from "react-toastify";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 import EditFormItem from "../components/EditFormItem";
 import IssueItemForm from "../components/IssueItemForm";
 
@@ -17,7 +17,6 @@ function Items() {
   const [editItem, setEditItem] = useState(null);
 
   const [showIssueForm, setShowIssueForm] = useState(false);
-
 
   useEffect(() => {
     handleItemFetch();
@@ -91,9 +90,26 @@ function Items() {
     }
   };
 
- 
+  useEffect(() => {
+    if (!items) {
+      toast.info("Loading Data 🔃!", {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        isLoading: true,
+      });
+    }else{
+      toast.dismiss();
+    }
+  }, [items]);
 
-  console.log("selectedProducts =",selectedProducts);
+  console.log("selectedProducts =", selectedProducts);
 
   return (
     <>

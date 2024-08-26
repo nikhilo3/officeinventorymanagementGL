@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FormReturn from '../components/FormReturn';
 import { api } from '../config/api';
+import { Bounce, toast } from 'react-toastify';
 
 function ReturnItem() {
 
@@ -20,6 +21,26 @@ function ReturnItem() {
     setreturnItem(data.returnedItems)
     
   }
+
+  useEffect(() => {
+    if (!retrunItem) {
+      toast.info("Loading Data 🔃!", {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+        isLoading: true,
+      });
+    }else{
+      toast.dismiss();
+    }
+  }, [retrunItem]);
+  
   return (
     <>
     <div className="p-2">
