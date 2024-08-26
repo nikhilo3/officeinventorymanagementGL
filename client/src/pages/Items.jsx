@@ -23,8 +23,39 @@ function Items() {
   }, []);
 
   const handleItemFetch = async () => {
-    const { data } = await api.get("/product/get");
-    setItems(data.products);
+    const toastId = toast.info("Loading Data 🔃!", {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Bounce,
+      isLoading: true,
+    });
+
+    try {
+      const { data } = await api.get("/product/get");
+      setItems(data.products);
+
+      toast.dismiss(toastId);
+    } catch (error) {
+      toast.dismiss(toastId);
+
+      toast.error("Failed to Load Data ❌", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
   };
 
   const handleAvailability = (item) => {
@@ -89,25 +120,6 @@ function Items() {
       console.log("error while delete item", error);
     }
   };
-
-  useEffect(() => {
-    if (!items) {
-      toast.info("Loading Data 🔃!", {
-        position: "top-right",
-        autoClose: false,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-        isLoading: true,
-      });
-    }else{
-      toast.dismiss();
-    }
-  }, [items]);
 
   console.log("selectedProducts =", selectedProducts);
 

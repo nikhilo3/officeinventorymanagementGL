@@ -8,8 +8,6 @@ function Order() {
 
   const [order, setOrder] = useState(null);
 
-  const [loadingToastId, setLoadingToastId] = useState(null);
-
   useEffect(() => {
     handleOrderFetch();
   }, []);
@@ -27,7 +25,6 @@ function Order() {
       transition: Bounce,
       isLoading: true,
     });
-    setLoadingToastId(toastId);
 
     try {
       const { data } = await api.get("/order/get");

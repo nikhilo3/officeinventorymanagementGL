@@ -38,11 +38,6 @@ function IssueItem() {
 
   return (
     <div className="p-2">
-      <div className="flex justify-end mb-4">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
-          New Issue
-        </button>
-      </div>
       <div className="bg-white shadow-md rounded-lg">
         <div className="overflow-y-auto h-full">
           <table className="min-w-full bg-white">
@@ -65,7 +60,7 @@ function IssueItem() {
                   <td className="py-2 px-4 border-b">{product.departmentName}</td>
                   <td className="py-2 px-4 border-b">{product.items.map((p,i)=>{
                     return <span key={i}>
-                      {p.itemid.productname} ({p.quantity})
+                      {p.itemid ? p.itemid?.productname:"Removed"} ({p.quantity})
                       <br/>
                     </span>
                   })}</td>
